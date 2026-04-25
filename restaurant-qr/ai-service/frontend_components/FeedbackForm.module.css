@@ -1,0 +1,105 @@
+/* Add to: customer-app/src/components/FeedbackForm.module.css */
+
+.wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.star {
+  font-size: 32px;
+  color: #ddd;
+  background: none;
+  border: none;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.1s, transform 0.1s;
+}
+.star:hover { transform: scale(1.15); }
+.starFilled { color: #F39C12; }
+
+.ratingLabel {
+  font-size: 13px;
+  font-weight: 600;
+  color: #F39C12;
+  margin-left: 4px;
+}
+
+.textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  resize: none;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.textarea:focus { border-color: var(--brand); }
+.textarea::placeholder { color: var(--muted); }
+
+.textMeta {
+  display: flex;
+  justify-content: flex-end;
+  margin: 4px 0 12px;
+}
+.charCount { font-size: 11px; color: var(--muted); }
+
+.sentimentPreview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid;
+  margin-bottom: 14px;
+  animation: fadeIn 0.25s ease;
+}
+.sentEmoji { font-size: 22px; }
+.sentLabel { font-size: 13px; font-weight: 600; }
+.sentSummary { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+
+.submitBtn {
+  width: 100%;
+  padding: 14px;
+  background: var(--brand);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 600;
+  transition: background 0.15s, transform 0.1s;
+}
+.submitBtn:hover { background: var(--brand-dark); }
+.submitBtn:active { transform: scale(0.98); }
+.submitBtn:disabled { background: var(--muted); cursor: default; }
+
+.thankYou {
+  text-align: center;
+  padding: 32px 16px;
+}
+.tyIcon { font-size: 48px; margin-bottom: 12px; }
+.tyTitle { font-size: 17px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.tySub { font-size: 13px; color: var(--muted); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; } }

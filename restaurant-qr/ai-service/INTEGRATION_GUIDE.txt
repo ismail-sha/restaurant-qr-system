@@ -1,0 +1,102 @@
+# 🤖 AI Features — Integration Guide
+# Tells you EXACTLY which file to copy WHERE in your existing project
+
+# ═══════════════════════════════════════════════════════════════════
+# STEP 1 — Copy the entire ai-service/ folder into your project
+# ═══════════════════════════════════════════════════════════════════
+
+restaurant-qr/
+├── backend/
+├── customer-app/
+├── kitchen-app/
+└── ai-service/          ← PASTE THE ENTIRE ai-service/ FOLDER HERE
+    ├── main.py
+    ├── requirements.txt
+    ├── .env.example
+    ├── models/
+    ├── routes/
+    └── utils/
+
+
+# ═══════════════════════════════════════════════════════════════════
+# STEP 2 — Copy these files INTO your existing project folders
+# ═══════════════════════════════════════════════════════════════════
+
+# ── Backend (Node.js) ──────────────────────────────────────────────
+
+FROM: ai-service/backend_integration/ai.js
+TO:   backend/src/utils/ai.js          ← CREATE this new file
+
+FROM: ai-service/backend_integration/orders_updated.js
+ACTION: This REPLACES backend/src/routes/orders.js
+        (or copy only the new/changed parts shown in the comments)
+
+Also add to backend/.env:
+    AI_SERVICE_URL=http://localhost:8000
+
+# ── Customer App (React) ──────────────────────────────────────────
+
+FROM: ai-service/frontend_components/RecommendationBar.jsx
+TO:   customer-app/src/components/RecommendationBar.jsx
+
+FROM: ai-service/frontend_components/RecommendationBar.module.css
+TO:   customer-app/src/components/RecommendationBar.module.css
+
+FROM: ai-service/frontend_components/FeedbackForm.jsx
+TO:   customer-app/src/components/FeedbackForm.jsx
+
+FROM: ai-service/frontend_components/FeedbackForm.module.css
+TO:   customer-app/src/components/FeedbackForm.module.css
+
+# ── Kitchen App (React) ───────────────────────────────────────────
+
+FROM: ai-service/frontend_components/SentimentReport.jsx
+TO:   kitchen-app/src/components/SentimentReport.jsx
+
+FROM: ai-service/frontend_components/SentimentReport.module.css
+TO:   kitchen-app/src/components/SentimentReport.module.css
+
+
+# ═══════════════════════════════════════════════════════════════════
+# STEP 3 — Edit 2 existing React files to wire up the new components
+# ═══════════════════════════════════════════════════════════════════
+
+# ── customer-app/src/components/CartTab.jsx ───────────────────────
+# Add this import at the top:
+    import RecommendationBar from './RecommendationBar';
+
+# Add this inside the return, ABOVE the place-order button:
+    <RecommendationBar tableId={tableId} />
+
+# Pass tableId as a prop from TablePage:
+    <CartTab onPlaceOrder={placeOrder} placing={placing} tableId={tableId} />
+
+# ── customer-app/src/components/OrderStatusTab.jsx ────────────────
+# Add this import at the top:
+    import FeedbackForm from './FeedbackForm';
+
+# Add this at the bottom of the return (when order is 'served'):
+    {order.status === 'served' && (
+      <FeedbackForm
+        orderId={order.id}
+        tableId={tableId}
+      />
+    )}
+
+# ── kitchen-app/src/pages/DashboardPage.jsx ───────────────────────
+# Add this import at the top:
+    import SentimentReport from '../components/SentimentReport';
+
+# Add 'reports' to the nav items array:
+    { id: 'reports', icon: '📊', label: 'AI Reports' },
+
+# Add this in the main content area:
+    {activeView === 'reports' && <SentimentReport />}
+
+
+# ═══════════════════════════════════════════════════════════════════
+# STEP 4 — Add AI_SERVICE_URL to backend .env
+# ═══════════════════════════════════════════════════════════════════
+
+# Open backend/.env and add this line:
+AI_SERVICE_URL=http://localhost:8000

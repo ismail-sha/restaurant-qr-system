@@ -1,0 +1,194 @@
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: border-color 0.3s;
+}
+
+.cardNew {
+  animation: slideIn 0.35s ease;
+  border-color: var(--status-color, var(--border));
+}
+
+.urgency_warning { border-left: 3px solid #F39C12; }
+.urgency_overdue { border-left: 3px solid #E74C3C; animation: urgentPulse 1.5s infinite; }
+
+@keyframes slideIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes urgentPulse { 0%,100%{border-left-color:#E74C3C} 50%{border-left-color:#c0392b} }
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+}
+
+.headerLeft { display: flex; align-items: center; gap: 8px; }
+
+.tableTag {
+  background: var(--brand);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 3px 10px;
+}
+
+.orderNum { font-size: 12px; color: var(--muted); }
+
+.headerRight { display: flex; align-items: center; gap: 8px; }
+
+.elapsedBadge {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  border-radius: 10px;
+  padding: 2px 8px;
+  font-weight: 500;
+}
+.elapsedWarning { color: #E74C3C; background: rgba(231,76,60,0.12); }
+
+.statusBadge {
+  font-size: 11px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 3px 10px;
+}
+
+.items {
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.itemQty {
+  color: var(--muted);
+  font-weight: 600;
+  min-width: 24px;
+}
+
+.itemEmoji { font-size: 16px; }
+
+.itemName { flex: 1; color: var(--text); font-weight: 500; }
+
+.itemNote { font-size: 12px; cursor: help; }
+
+.itemTime {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 2px 6px;
+}
+
+.notes {
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--border);
+  font-style: italic;
+}
+
+.timeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.timeLabel { font-size: 12px; color: var(--muted); }
+
+.timeEditBtn {
+  font-size: 11px;
+  color: var(--muted);
+  background: none;
+  border: none;
+  padding: 0;
+  transition: color 0.15s;
+}
+.timeEditBtn:hover { color: var(--text); }
+
+.timeInput {
+  display: flex;
+  gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+.timeField {
+  flex: 1;
+  padding: 7px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 13px;
+  outline: none;
+}
+.timeField:focus { border-color: #2980B9; }
+
+.timeConfirmBtn {
+  padding: 7px 12px;
+  background: #2980B9;
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.timeConfirmBtn:hover { background: #1e6fa5; }
+
+.actionBtn {
+  margin: 12px 14px;
+  padding: 11px;
+  background: var(--action-color, var(--brand));
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  width: calc(100% - 28px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.actionBtn:hover { opacity: 0.88; }
+.actionBtn:active { transform: scale(0.98); }
+.actionBtn:disabled { opacity: 0.5; cursor: default; }
+
+.spinner {
+  width: 18px; height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.servedMsg {
+  padding: 10px 14px 12px;
+  font-size: 13px;
+  color: #27AE60;
+  text-align: center;
+  font-weight: 500;
+}

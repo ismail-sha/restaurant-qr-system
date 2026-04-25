@@ -1,0 +1,22 @@
+.bar {
+  display: flex;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.bar::-webkit-scrollbar { display: none; }
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  text-align: center;
+  min-width: 90px;
+  flex-shrink: 0;
+}
+
+.cardIcon { font-size: 18px; margin-bottom: 6px; }
+.cardNum { font-size: 26px; font-weight: 700; line-height: 1; margin-bottom: 4px; }
+.cardLabel { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.04em; }

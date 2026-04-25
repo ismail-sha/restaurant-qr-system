@@ -1,0 +1,25 @@
+:root {
+  --bg: #0f0f0f;
+  --surface: #1a1a1a;
+  --surface2: #242424;
+  --border: #2e2e2e;
+  --text: #f0f0f0;
+  --muted: #888;
+  --brand: #E74C3C;
+  --green: #27AE60;
+  --blue: #2980B9;
+  --gold: #F39C12;
+  --radius: 12px;
+  --radius-sm: 8px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { -webkit-font-smoothing: antialiased; }
+button { cursor: pointer; font-family: inherit; }
+
+@keyframes slideIn { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes ring { 0%,100%{transform:rotate(0)} 10%,30%,50%,70%,90%{transform:rotate(-10deg)} 20%,40%,60%,80%{transform:rotate(10deg)} }
+
+.new-order-anim { animation: slideIn 0.35s ease; }

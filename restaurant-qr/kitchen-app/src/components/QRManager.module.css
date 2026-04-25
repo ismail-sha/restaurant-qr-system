@@ -1,0 +1,97 @@
+.wrap { padding: 20px; max-width: 900px; }
+.loading { padding: 40px; text-align: center; color: var(--muted); }
+
+.pageHeader { margin-bottom: 20px; }
+.pageTitle { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.pageSub { font-size: 13px; color: var(--muted); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+
+.tableNum { font-size: 14px; font-weight: 700; color: var(--text); flex: 1; }
+.capacity { font-size: 11px; color: var(--muted); }
+
+.activeBadge {
+  font-size: 10px;
+  font-weight: 600;
+  background: rgba(231,76,60,0.15);
+  color: var(--brand);
+  border-radius: 10px;
+  padding: 2px 8px;
+}
+
+.qrWrap {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+}
+
+.qrImg { width: 140px; height: 140px; display: block; }
+
+.qrUrl {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: center;
+  padding: 0 12px 10px;
+  word-break: break-all;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px 14px;
+}
+
+.dlBtn, .testBtn {
+  flex: 1;
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition: opacity 0.15s;
+  border: none;
+}
+
+.dlBtn { background: var(--brand); color: #fff; }
+.dlBtn:hover { opacity: 0.85; }
+.testBtn { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.testBtn:hover { border-color: var(--brand); }
+
+.generateBtn {
+  margin: 16px 14px;
+  padding: 11px;
+  background: none;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+.generateBtn:hover { border-color: var(--brand); color: var(--brand); }
+.generateBtn:disabled { opacity: 0.5; }

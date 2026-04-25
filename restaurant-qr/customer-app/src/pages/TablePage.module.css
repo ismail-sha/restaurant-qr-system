@@ -1,0 +1,150 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg);
+  position: relative;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logo { font-size: 24px; }
+
+.restaurantName {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.tableBadge {
+  font-size: 11px;
+  color: var(--brand);
+  font-weight: 500;
+}
+
+.connDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.connGreen { background: #27AE60; animation: pulse 2s infinite; }
+.connRed { background: #E74C3C; }
+
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 80px;
+}
+
+.nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 20;
+}
+
+.navBtn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  padding: 10px 8px 12px;
+  background: none;
+  border: none;
+  position: relative;
+  color: var(--muted);
+  transition: color 0.15s;
+}
+
+.navBtn:active { transform: scale(0.95); }
+
+.navActive { color: var(--brand); }
+
+.navIcon { font-size: 20px; }
+
+.navLabel {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.badge {
+  position: absolute;
+  top: 6px;
+  right: calc(50% - 18px);
+  background: var(--brand);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 1px 5px;
+  min-width: 16px;
+  text-align: center;
+}
+
+.badgeGreen { background: #27AE60; font-size: 9px; padding: 2px 4px; }
+
+.cartBar {
+  position: fixed;
+  bottom: 65px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 448px;
+  background: var(--brand);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  z-index: 15;
+  box-shadow: 0 4px 20px rgba(192,57,43,0.35);
+  transition: background 0.15s, transform 0.15s;
+  animation: slideUp 0.25s ease;
+}
+
+.cartBar:active { background: var(--brand-dark); transform: translateX(-50%) scale(0.98); }
+
+.cartBarCount {
+  background: rgba(255,255,255,0.2);
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.cartBarLabel {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.cartBarTotal {
+  font-size: 14px;
+  font-weight: 600;
+}

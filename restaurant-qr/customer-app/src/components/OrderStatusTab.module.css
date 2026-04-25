@@ -1,0 +1,117 @@
+.wrap { padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+.empty {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 80px 24px; text-align: center;
+}
+.emptyIcon { font-size: 56px; margin-bottom: 16px; }
+.emptyTitle { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.emptySub { font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+.hero {
+  border-radius: var(--radius);
+  border: 1.5px solid;
+  padding: 24px 20px;
+  text-align: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.heroIcon { font-size: 44px; margin-bottom: 12px; }
+.heroTitle { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.heroSub { font-size: 14px; color: var(--muted); margin-bottom: 16px; }
+
+.waitNum { font-size: 32px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+
+.progressWrap {
+  height: 8px; background: rgba(0,0,0,0.08);
+  border-radius: 20px; overflow: hidden; margin-bottom: 8px;
+}
+.progressBar { height: 100%; border-radius: 20px; transition: width 1s ease; }
+
+.progressLabel { font-size: 11px; color: var(--muted); }
+
+.stages {
+  display: flex; align-items: flex-start;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  padding: 20px 16px;
+}
+
+.stageItem {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px; flex: 0 0 auto;
+}
+
+.stageLine {
+  flex: 1; height: 2px;
+  background: var(--border);
+  margin-top: 14px;
+  transition: background 0.4s;
+}
+.stageLineDone { background: var(--brand); }
+
+.stageDot {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  transition: all 0.3s;
+}
+.stageDone { background: var(--brand); border-color: var(--brand); color: #fff; font-size: 13px; font-weight: 700; }
+.stageActive {
+  border-color: var(--brand); background: var(--surface);
+  box-shadow: 0 0 0 4px var(--brand-light);
+}
+
+.stageLabel {
+  font-size: 10px; color: var(--muted);
+  text-align: center; line-height: 1.2;
+  white-space: nowrap;
+}
+.stageLabelActive { color: var(--brand); font-weight: 600; }
+.stageLabelDone { color: var(--brand); }
+
+.orderCard {
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.orderCardHeader {
+  display: flex; justify-content: space-between;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+
+.orderNum { font-size: 13px; font-weight: 700; color: var(--text); }
+.tableNum {
+  font-size: 12px; font-weight: 600;
+  background: var(--brand); color: #fff;
+  border-radius: 20px; padding: 2px 10px;
+}
+
+.orderItem {
+  display: flex; justify-content: space-between;
+  padding: 10px 16px;
+  font-size: 13px; color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+.orderItemRight { color: var(--muted); }
+
+.orderTotal {
+  display: flex; justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 15px; font-weight: 700; color: var(--text);
+}
+
+.orderNotes {
+  padding: 10px 16px;
+  font-size: 12px; color: var(--muted);
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}

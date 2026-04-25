@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: restaurant_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: restaurant_qr
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Backend API + Socket.IO
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: restaurant_backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: restaurant_qr
+      DB_USER: postgres
+      DB_PASSWORD: postgres123
+      JWT_SECRET: change_this_to_a_secure_random_string_in_production
+      CUSTOMER_APP_URL: http://localhost:3000
+      KITCHEN_APP_URL: http://localhost:3001
+      QR_BASE_URL: http://localhost:3000
+    ports:
+      - "5000:5000"
+
+  # Customer App
+  customer-app:
+    build:
+      context: ./customer-app
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:5000
+        REACT_APP_SOCKET_URL: http://localhost:5000
+    container_name: restaurant_customer
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+
+  # Kitchen App
+  kitchen-app:
+    build:
+      context: ./kitchen-app
+      dockerfile: Dockerfile
+      args:
+        REACT_APP_API_URL: http://localhost:5000
+        REACT_APP_SOCKET_URL: http://localhost:5000
+    container_name: restaurant_kitchen
+    restart: unless-stopped
+    ports:
+      - "3001:80"
+
+volumes:
+  pgdata:
