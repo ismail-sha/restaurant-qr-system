@@ -57,7 +57,12 @@ router.post('/', [
       const subtotal = parseFloat(menuItem.price) * item.quantity;
       totalAmount += subtotal;
       maxPrepTime = Math.max(maxPrepTime, menuItem.prep_time_minutes);
-      validatedItems.push({ menuItem, quantity: item.quantity, subtotal, instructions: item.specialInstructions || null });
+      validatedItems.push({
+        menuItem,
+        quantity: item.quantity,
+        subtotal,
+        instructions: item.specialInstructions || null,
+      });
     }
 
     // Create order
@@ -171,7 +176,93 @@ router.get('/', authenticate, async (req, res, next) => {
   }
 });
 
-// ── GET /api/orders/:id — Get single order (customer or kitchen) ─────────────
+router.get('/recommend', async (req, res) => {
+  try {
+    const { itemIds, tableId } = req.query;
+
+    if (!itemIds) {
+      return res.json({ recommendations: [] });
+    }
+
+    const cartIds = String(itemIds).split(',').map(Number).filter(Boolean);
+
+    // Try AI service first
+    try {
+      const axios = require('axios');
+      const AI_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+      const aiRes = await axios.post(`${AI_URL}/ai/recommend`, {
+        cart_item_ids: cartIds,
+        table_id: tableId ? parseInt(tableId) : null,
+        top_n: 4,
+      }, { timeout: 5000 });
+      return res.json({ recommendations: aiRes.data.recommendations || [] });
+    } catch (aiErr) {
+      // AI service not running — use database fallback
+      console.log('AI service not reachable, using fallback recommendations');
+    }
+
+    // Fallback: return random menu items NOT already in cart
+    const result = await db.query(`
+      SELECT id, name, emoji, price, prep_time_minutes
+      FROM menu_items
+      WHERE is_available = true
+        AND id != ALL($1::int[])
+      ORDER BY RANDOM()
+      LIMIT 4
+    `, [cartIds.length ? cartIds : [0]]);
+
+    const recommendations = result.rows.map(item => ({
+      id: item.id,
+      name: item.name,
+      emoji: item.emoji || '🍽️',
+      price: parseFloat(item.price),
+      reason: 'Popular choice',
+      score: 0.5,
+    }));
+
+    return res.json({ recommendations });
+
+  } catch (err) {
+    console.error('Recommend error:', err.message);
+    return res.json({ recommendations: [] });
+  }
+});
+
+
+router.get('/table/:tableId', async (req, res, next) => {
+  try {
+    const result = await db.query(`
+      SELECT
+        o.*,
+        t.table_number,
+        json_agg(json_build_object(
+          'id', oi.id,
+          'menuItemId', oi.menu_item_id,
+          'name', mi.name,
+          'emoji', mi.emoji,
+          'quantity', oi.quantity,
+          'unitPrice', oi.unit_price,
+          'subtotal', oi.subtotal
+        ) ORDER BY oi.id) as items
+      FROM orders o
+      JOIN tables t ON t.id = o.table_id
+      LEFT JOIN order_items oi ON oi.order_id = o.id
+      LEFT JOIN menu_items mi ON mi.id = oi.menu_item_id
+      WHERE o.table_id = $1
+        AND o.status NOT IN ('served', 'cancelled')
+        AND o.placed_at > NOW() - INTERVAL '4 hours'
+      GROUP BY o.id, t.table_number
+      ORDER BY o.placed_at DESC
+    `, [req.params.tableId]);
+
+    res.json({ orders: result.rows.map(formatOrder) });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// ── GET /api/orders/:id — Get single order ───────────────────────────────────
+// ⚠️ This MUST come AFTER /recommend and /table/:tableId
 router.get('/:id', async (req, res, next) => {
   try {
     const result = await db.query(`
@@ -216,7 +307,6 @@ router.patch('/:id/status', authenticate, [
 
     const { status, note, estimatedTimeMinutes } = req.body;
 
-    // Get current order
     const current = await client.query(
       'SELECT o.*, t.table_number FROM orders o JOIN tables t ON t.id = o.table_id WHERE o.id = $1',
       [req.params.id]
@@ -227,7 +317,6 @@ router.patch('/:id/status', authenticate, [
     }
     const oldOrder = current.rows[0];
 
-    // Timestamp fields
     const timestampMap = {
       confirmed: 'confirmed_at',
       cooking: 'cooking_started_at',
@@ -245,7 +334,6 @@ router.patch('/:id/status', authenticate, [
     );
     const updatedOrder = updateRes.rows[0];
 
-    // History
     await client.query(
       `INSERT INTO order_status_history (order_id, from_status, to_status, changed_by, note)
        VALUES ($1, $2, $3, $4, $5)`,
@@ -256,7 +344,6 @@ router.patch('/:id/status', authenticate, [
 
     const io = req.app.get('io');
 
-    // Notify customer table
     io.to(`table_${oldOrder.table_id}`).emit('order_status_update', {
       orderId: updatedOrder.id,
       orderNumber: updatedOrder.order_number,
@@ -265,7 +352,6 @@ router.patch('/:id/status', authenticate, [
       updatedAt: updatedOrder.updated_at,
     });
 
-    // Notify kitchen
     io.to('kitchen').emit('order_updated', {
       orderId: updatedOrder.id,
       status: updatedOrder.status,
@@ -281,39 +367,38 @@ router.patch('/:id/status', authenticate, [
   }
 });
 
-// ── GET /api/orders/table/:tableId — Customer: get orders for a table ────────
-router.get('/table/:tableId', async (req, res, next) => {
-  try {
-    const result = await db.query(`
-      SELECT
-        o.*,
-        t.table_number,
-        json_agg(json_build_object(
-          'id', oi.id,
-          'menuItemId', oi.menu_item_id,
-          'name', mi.name,
-          'emoji', mi.emoji,
-          'quantity', oi.quantity,
-          'unitPrice', oi.unit_price,
-          'subtotal', oi.subtotal
-        ) ORDER BY oi.id) as items
-      FROM orders o
-      JOIN tables t ON t.id = o.table_id
-      LEFT JOIN order_items oi ON oi.order_id = o.id
-      LEFT JOIN menu_items mi ON mi.id = oi.menu_item_id
-      WHERE o.table_id = $1
-        AND o.status NOT IN ('served', 'cancelled')
-        AND o.placed_at > NOW() - INTERVAL '4 hours'
-      GROUP BY o.id, t.table_number
-      ORDER BY o.placed_at DESC
-    `, [req.params.tableId]);
+// ── POST /api/orders/:id/feedback — Save customer review ────────────────────
+router.post('/:id/feedback', [
+  body('reviewText').notEmpty().trim(),
+  body('rating').isInt({ min: 1, max: 5 }),
+], async (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
 
-    res.json({ orders: result.rows.map(formatOrder) });
+  try {
+    const { reviewText, rating, tableId, itemRatings } = req.body;
+
+    try {
+      const axios = require('axios');
+      const AI_URL = process.env.AI_SERVICE_URL || 'http://localhost:8000';
+      await axios.post(`${AI_URL}/ai/feedback/submit`, {
+        review_text: reviewText,
+        rating: rating,
+        order_id: parseInt(req.params.id),
+        table_id: tableId ? parseInt(tableId) : null,
+        item_ratings: itemRatings || {},
+      }, { timeout: 5000 });
+    } catch (aiErr) {
+      console.log('AI service not reachable for feedback, skipping');
+    }
+
+    res.json({ success: true, message: 'Thank you for your feedback!' });
   } catch (err) {
     next(err);
   }
 });
 
+// ── Helper ───────────────────────────────────────────────────────────────────
 function formatOrder(row) {
   return {
     id: row.id,
